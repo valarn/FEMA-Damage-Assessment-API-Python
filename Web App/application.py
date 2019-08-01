@@ -1,5 +1,7 @@
-from flask import Flask, render_template, url_for, flash, redirect
+from flask import Flask, render_template, url_for, flash, redirect, request
+import func as custom
 from forms import RegistrationForm, LoginForm
+from werkzeug import secure_filename
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -20,6 +22,7 @@ posts = [
 ]
 
 @app.route("/", methods=['GET', 'POST'])
+
 @app.route("/home")
 def login():
     form = LoginForm()
@@ -49,47 +52,38 @@ def register():
 
 
 
+
+@app.route('/upload')
+def upload():
+    return render_template('upload.html')
+
+@app.route('/uploader', methods = ['GET', 'POST'])
+def upload_file():
+   if request.method == 'POST':
+      f = request.files['file']
+      print(type(f))
+      f.save(f'user_photo/{secure_filename(f.filename)}')
+      master_results = custom.master_query(f.filename)
+      return render_template('uploader.html',
+      zillow_id = master_results['zillow_id'],
+      home_type = master_results['home_type'],
+      year_built = master_results['year_built'],
+      property_size = master_results['property_size'],
+      home_size = master_results['home_size'],
+      bathrooms = master_results['bathrooms'],
+      bedrooms = master_results['bedrooms'],
+      last_sold_date = master_results['last_sold_date'],
+      last_sold_price = master_results['last_sold_price'],
+      zestimate_amount = master_results['zestimate_amount'])
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     app.run(debug=True)
-# from flask import Flask, render_template
-#
-# # from forms import RegistrationForm, LoginForm
-#
-# app = Flask(__name__)
-#
-# @app.route("/")
-# @app.route("/home")
-# def hello():
-#     return render_template('home.html')
-#
-# @app.route("/about")
-# def about():
-#     return render_template('about.html')
-# #app.config['SECRET_KEY'] = '8543859048359083490'
-# #
-# # @app.route("/")
-# @app.route("/home")
-# def home():
-#      return '''<!doctype html>
-#      <html>
-#
-#      '''
-# #
-# # @app.route("/about")
-# # def about():
-# #     return render_template('about.html',title = 'About')
-# #
-# # @app.route("/register")
-# # def register():
-# #     form = RegistrationForm()
-# #     return render_template('register.html',title = 'Register',form = form)
-# #
-# #
-# # @app.route("/login")
-# # def register():
-# #     form = LoginForm()
-# #     return render_template('login.html',title = 'Login',form = form)
-# #
-# #
-# if __name__ == '__main__':
-#       app.run(debug=True) #allows the user to use the input"python file.py" into command terminal
