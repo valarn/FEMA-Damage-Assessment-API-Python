@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+{% block content %}
+<body> The zillow id for the unit {{zillow_id}} <br>
+ Home type: {{home_type}} <br>
+ Year Built: {{year_built}} <br>
+ Lot size: {{property_size}} <br>
+ Living area: {{home_size}} <br>
+ Bathrooms: {{bathrooms}} <br>
+ Bedrooms: {{bedrooms}} <br>
+ Last time sold: {{last_sold_date}} <br>
+ Last sold price: ${{last_sold_price}} <br>
+ Zestimate price: ${{zestimate_amount}} </body>
+
+{% endblock content %}
