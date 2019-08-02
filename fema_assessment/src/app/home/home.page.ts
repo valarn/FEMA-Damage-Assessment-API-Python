@@ -21,7 +21,7 @@ export class HomePage implements OnInit {
 
   images = [];
 
-  constructor(private router: Router, private camera: Camera, private file: File, private http: HttpClient, private webview: WebView,
+  constructor(private router: Router, private camera: Camera, private file: File, public http: HttpClient, private webview: WebView,
     private actionSheetController: ActionSheetController, private toastController: ToastController,
     private storage: Storage, private platform: Platform, private loadingController: LoadingController,
     private ref: ChangeDetectorRef, private filePath: FilePath) { }
@@ -198,13 +198,15 @@ export class HomePage implements OnInit {
       });
       await loading.present();
 
-      this.http.post("http://localhost:8888/upload.php", formData) // TODO: change server
+
+      this.http.post("http://127.0.0.1:5000/",  formData) //
           .pipe(
               finalize(() => {
                   loading.dismiss();
               })
           )
-          .subscribe(res => {
+          .subscribe((res) => {
+              console.log(res);
               if (res['success']) {
                   this.presentToast('File upload complete.')
               } else {
