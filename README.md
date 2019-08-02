@@ -1,3 +1,4 @@
+
 # FEMA Damage Assessment App
 
 > Author: Vala Rahmani, Blake Franey, John Kim
@@ -98,7 +99,8 @@ When agents are on the field, access the web app in order to input the data for 
 
 First, the user will be able to upload a picture to our web app API and return results pre-disaster and post-disaster.  They can choose either a photo from the phone's storage or take a picture right in the app.  Regardless of which option they choose, the photo will be stored in the app to upload later if connectivity is an issue.  Once uploaded, they user will be able to fill out a form for the criterias FEMA audits before securing restoration funds.  
 
-The current version of the app is set up to call the web app API hosted on a server and return the mentioned results.  All of the outputs and the user inputs will be pushed to the SQL database hosted on Heroku.
+
+The current version of the app is set up to call the web app API hosted on a server and return the mentioned results.  All of the outputs and the user inputs will be pushed to the SQL database hosted on Heroku.  Possible future additions include:
 
 **NOTE: Mobile app has been developed with node.js and Angular7 using the Ionic framework.
 
@@ -115,10 +117,12 @@ As a user who wants to improve the app and add further features to the app refer
 ---
 
 - Collecting reliable information from past disasters to build a model to predict damages to individual properties.
+
 - Expanding the form portion of the app to collect more detailed data for stronger predictions.
 - Including the damages cost estimate after submitting form responses.
 - Embedded map functionality that can notify the user of road closures and for navigation.
 - Including satellite imagery of the disaster area.
+
 
 
 
@@ -129,6 +133,3 @@ As a user who wants to improve the app and add further features to the app refer
 [FEMA Dataset](https://www.fema.gov/openfema-dataset-individual-assistance-housing-registrants-large-disasters-v1)
 
 [How to make a Heroku Database](https://devcenter.heroku.com/articles/getting-started-with-kotlin#use-a-database)
-
-
-

@@ -1,0 +1,7 @@
+{
+  "name": "femaApplication",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
