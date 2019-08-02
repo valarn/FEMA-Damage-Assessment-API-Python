@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block content %}
+<body>
+<img src="/static/google-pics/gsv_0.jpg" alt="google street view results" width= "128" height="128">
+<img src="/static/user-photo/croft.JPG" alt="user-photo" width= "128" height="128" >
+
+
+<h1>Summary report of  </h1> <br>
+<b>{{address}}</b> <br>
+ The zillow id for the unit: {{zillow_id}} <br>
+ Home type: {{home_type}} <br>
+ Year Built: {{year_built}} <br>
+ Lot size: {{property_size}} <br>
+ Living area: {{home_size}} <br>
+ Bathrooms: {{bathrooms}} <br>
+ Bedrooms: {{bedrooms}} <br>
+ Last time sold: {{last_sold_date}} <br>
+ Last sold price: ${{last_sold_price}} <br>
+ Zestimate price: ${{zestimate_amount}}
+ </body>
+
+{% endblock content %}

@@ -2,6 +2,7 @@ from flask import Flask, render_template, url_for, flash, redirect, request
 import func as custom
 from forms import RegistrationForm, LoginForm
 from werkzeug import secure_filename
+from sqlalchemy import create_engine
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
@@ -62,24 +63,44 @@ def upload_file():
    if request.method == 'POST':
       f = request.files['file']
       print(type(f))
-      f.save(f'user_photo/{secure_filename(f.filename)}')
-      master_results = custom.master_query(f.filename)
-      return render_template('uploader.html',
-      zillow_id = master_results['zillow_id'],
-      home_type = master_results['home_type'],
-      year_built = master_results['year_built'],
-      property_size = master_results['property_size'],
-      home_size = master_results['home_size'],
-      bathrooms = master_results['bathrooms'],
-      bedrooms = master_results['bedrooms'],
-      last_sold_date = master_results['last_sold_date'],
-      last_sold_price = master_results['last_sold_price'],
-      zestimate_amount = master_results['zestimate_amount'])
+      f.save(f'static/user-photo/{secure_filename(f.filename)}')
+      master_results = custom.master_query(f'static/user-photo/{secure_filename(f.filename)}')
 
 
+      #
+      # engine = create_engine('postgres://elfmuvhdhailnu:47c793a2d65fff982391c49abae7608c68adc66897919402fb73155dd67a5964@ec2-107-22-228-141.compute-1.amazonaws.com:5432/da22vfv1epa332')
+      #
+      # connection = engine.connect()
+      # sql = f"""
+      # INSERT INTO Property_info
+      # values({master_results['zillow_id']},
+      # '{master_results['address']}',
+      # '{master_results['home_type']}')
+      # {master_results['year_built']},
+      # {master_results['property_size']},
+      # {master_results['home_size']},
+      # {master_results['bathrooms']},
+      # {master_results['bedrooms']},
+      # '{master_results['last_sold_date']}',
+      # {master_results['last_sold_price']},
+      # {master_results['zestimate_amount']}
+      # )
+      # """
+      # connection.execute(sql)
 
 
-
+   return render_template('uploader.html',
+   zillow_id = master_results['zillow_id'],
+   home_type = master_results['home_type'],
+   year_built = master_results['year_built'],
+   property_size = master_results['property_size'],
+   home_size = master_results['home_size'],
+   bathrooms = master_results['bathrooms'],
+   bedrooms = master_results['bedrooms'],
+   last_sold_date = master_results['last_sold_date'],
+   last_sold_price = master_results['last_sold_price'],
+   zestimate_amount = master_results['zestimate_amount'],
+   address = master_results['address'])
 
 
 
