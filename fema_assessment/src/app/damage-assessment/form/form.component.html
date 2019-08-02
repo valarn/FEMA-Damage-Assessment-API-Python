@@ -1,0 +1,142 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>
+      Assessment Form
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content padding class="form-content">
+
+<!--    Property Details Group-->
+
+    <form [formGroup]="property_details_group"  (ngSubmit)="onSubmit(property_details_group.value)">
+
+<!--         Property Type-->
+
+    <ion-item>
+      <ion-label position="floating" color="primary">Propert Type</ion-label>
+      <ion-select formControlName="propertyType" cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let propertyType of property_type"
+                             [value]="propertyType">{{propertyType}}</ion-select-option></ion-select>
+    </ion-item>
+
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.propertyType">
+        <div class="error-message" *ngIf="property_details_group.get('propertyType').hasError(validation.type) &&
+        (property_details_group.get('propertyType').dirty || property_details_group.get('propertyType').touched)">
+          <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+<!--        Rent Status-->
+
+        <ion-item>
+      <ion-label position="floating" color="primary">Rent Status</ion-label>
+      <ion-select formControlName="rentStatus" cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let rentStatus of rent_status"
+                             [value]="rentStatus">{{rentStatus}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.rentStatus">
+        <div class="error-message" *ngIf="property_details_group.get('rentStatus').hasError(validation.type) &&
+        (property_details_group.get('rentStatus').dirty || property_details_group.get('rentStatus').touched)">
+          <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+<!--        Occupancy Status-->
+
+        <ion-item>
+      <ion-label position="floating" color="primary">Occupancy Status</ion-label>
+      <ion-select formControlName="occupancyStatus" cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let occupancyStatus of occupancy_status"
+                             [value]="occupancyStatus">{{occupancyStatus}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.occupancyStatus">
+        <div class="error-message" *ngIf="property_details_group.get('occupancyStatus').hasError(validation.type) &&
+        (property_details_group.get('occupancyStatus').dirty || property_details_group.get('occupancyStatus').touched)">
+          <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+<!--        Property Access-->
+
+        <ion-item>
+      <ion-label position="floating" color="primary">Property Accessibility</ion-label>
+      <ion-select formControlName="propertyAccess" cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let propertyAccess of access_property"
+                             [value]="propertyAccess">{{propertyAccess}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.propertyAccess">
+        <div class="error-message" *ngIf="property_details_group.get('propertyAccess').hasError(validation.type) &&
+        (property_details_group.get('propertyAccess').dirty || property_details_group.get('propertyAccess').touched)">
+          <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+<!--        Property Damage Form Group-->
+
+<!--        <div formGroupName="property_damage_group">-->
+
+<!--            Disaster Type-->
+
+        <ion-item>
+      <ion-label position="floating" color="primary">Disaster Type</ion-label>
+      <ion-select formControlName="disasterType" cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let disasterType of disaster_type"
+                             [value]="disasterType">{{disasterType}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.disasterType">
+        <div class="error-message" *ngIf="property_details_group.get('disasterType').hasError(validation.type) &&
+        (property_details_group.get('disasterType').dirty || property_details_group.get('disasterType').touched)">
+          <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+<!--        Damage Degree-->
+
+        <ion-item>
+      <ion-label position="floating" color="primary">Damage Estimate</ion-label>
+      <ion-select formControlName="propertyDamage" cancelText="Cancel" okText="OK">
+          <ion-select-option *ngFor="let propertyDamage of damage_degree"
+                             [value]="propertyDamage">{{propertyDamage}}</ion-select-option>
+      </ion-select>
+    </ion-item>
+
+    <div class="validation-errors">
+      <ng-container *ngFor="let validation of validation_messages.propertyDamage">
+        <div class="error-message" *ngIf="property_details_group.get('propertyDamage').hasError(validation.type) &&
+        (property_details_group.get('propertyDamage').dirty || property_details_group.get('propertyDamage').touched)">
+          <ion-icon name="information-circle-outline"></ion-icon> {{ validation.message }}
+        </div>
+      </ng-container>
+    </div>
+
+    </form>
+</ion-content>
+
+
+<!--<ion-footer>-->
+<!--  <ion-toolbar color="primary">-->
+<!--    <ion-button fill="clear" expand="full" color="light" (click)="selectImage()">-->
+<!--      <ion-icon name="checkmark"></ion-icon>-->
+<!--      Submit</ion-button>-->
+<!--  </ion-toolbar>-->
+<!--</ion-footer>-->
