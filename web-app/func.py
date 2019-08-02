@@ -30,16 +30,12 @@ from pyzillow.pyzillow import ZillowWrapper, GetDeepSearchResults, GetUpdatedPro
 
 
 def get_exif(filename):
-
-    """ Function for extracting GPS data from image
+    """Function for extracting GPS data from image
         Args:
             img (.jpeg / .png et al.): an image file Note: Photos
         Output:
             Will first validate whether or not we have a valid image file and then output the
-            metadata in form of a dictionary
-    """
-
-
+            metadata in form of a dictionary """
     try:
         image = Image.open(filename)
         image.verify()    #Image verify won't output anything if the image is in the correct format
@@ -56,8 +52,50 @@ def get_exif(filename):
 
     return exif
 
+
+
 # Returns the gps information from camera metadata
 def get_geotagging(exif):
+
+
+    """ Returns:
+        Dictionary with following key: value pairs:
+            'GPSVersionID':  bytes,
+            'GPSLatitudeRef': str = 'N' or 'S',
+            'GPSLatitude': tuple of tuples,
+            'GPSLongitudeRef': str = 'E' or 'W',
+            'GPSLongitude': tuple of tuples,
+            'GPSAltitudeRef': byte string,
+            'GPSAltitude': tuple,
+            'GPSTimeStamp': tuple of tuples,
+            'GPSSatellites':,
+            'GPSStatus':,
+            'GPSMeasureMode':,
+            'GPSDOP':,
+            'GPSSpeedRef': str,
+            'GPSSpeed': tuple,
+            'GPSImgDirectionRef': str,
+            'GPSImgDirection': tuple,
+            'GPSDestBearingRef': str,
+            'GPSDestBearing': tuple,
+            'GPSDateStamp': str representing datetime,
+            'GPSDifferential',
+            'GPSHPositioningError': tuple,
+            'GPSTrackRef',
+            'GPSTrack',
+            'GPSMapDatum',
+            'GPSDestLatitudeRef',
+            'GPSDestLatitude',
+            'GPSDestLongitudeRef',
+            'GPSDestLongitude',
+            'GPSDestDistanceRef',
+            'GPSDestDistance',
+            'GPSProcessingMethod',
+            'GPSAreaInformation',
+
+                }
+    """
+
     if not exif:
         raise ValueError("No metadata found please check your camera settings")
 
@@ -67,6 +105,7 @@ def get_geotagging(exif):
             geotagging= exif[tag]
 
     new = {GPSTAGS[k]: v for k,v in geotagging.items()}
+
     return new
 
 # Converts the latitude and longtitude extracted from geotagging into degrees.
@@ -111,7 +150,7 @@ def google_streetviewer(location, key='YOURAPIKEY'):
     results = google_streetview.api.results(params)
 
     # Download images to directory 'downloads'
-    return results.download_links('google-pics')
+    return results.download_links('static/google-pics')
 
 # Setting up the Google API to show the address
 def reverse_lookup(lat, long, key='YOURAPIKEY'):
@@ -130,8 +169,10 @@ def reverse_lookup(lat, long, key='YOURAPIKEY'):
     city = location_details[1]
     state = location_details[2].split(" ")[1]
     return address, zipcode, city, state
-# Setting up the Zillow API
 
+
+
+# Setting up the Zillow API
 # Calls the zillow API and asks for address and gives out the details about the property.​
 def zillow_query(key, address,citystatezip):
 
@@ -140,8 +181,12 @@ def zillow_query(key, address,citystatezip):
     deep_search_response = zillow_data.get_deep_search_results(
         address, citystatezip)
     result = GetDeepSearchResults(deep_search_response)
-    # return the results
+
+
+    #Print the results of the query
     return result
+
+
 
 
 
@@ -149,15 +194,16 @@ def zillow_query(key, address,citystatezip):
 def master_query(img_file):
     exif = get_exif(img_file)
     tags = get_geotagging(exif)
-    location = f"{to_degrees(tags['GPSLongitude'], tags['GPSLongitudeRef'])},{to_degrees(tags['GPSLatitude'], tags['GPSLatitudeRef'])}"
+    location = f"{to_degrees(tags['GPSLatitude'], tags['GPSLatitudeRef'])},{to_degrees(tags['GPSLongitude'], tags['GPSLongitudeRef'])}"
 
     google_view = google_streetviewer(location, key= credential['google-api-key'])
 
-    address = reverse_lookup(float(location.split(",")[1]),float(location.split(",")[0]), credential['google-api-key'])
+    address = reverse_lookup(float(location.split(",")[0]),float(location.split(",")[1]), credential['google-api-key'])
 
     details = zillow_query(credential['zillow-api-key'],address[0],address[1])
     details_dict = details.__dict__
     keys = ['zillow_id','home_type','year_built','property_size','home_size',
             'bathrooms','bedrooms','last_sold_date','last_sold_price','zestimate_amount']
     dict_outcome= {k:details_dict[k] for k in keys if k in details_dict}
+    dict_outcome['address'] = (f'{address[0]},{address[2]},{address[1]}')
     return dict_outcome
