@@ -3,37 +3,33 @@ import func as custom
 from forms import RegistrationForm, LoginForm
 from werkzeug import secure_filename
 from sqlalchemy import create_engine
+import os
+import time
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '5791628bb0b13ce0c676dfde280ba245'
-
+app.secret_key = 'damageassessment'
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 posts = [
     {
         'author': 'Vala',
-        'title': 'How to build a net in your home',
-        'content': 'If you have a huge apartment then you need to build a huge hammock for all of your friends to enjoy.',
-        'date_posted': 'April 20, 2018'
+        'title': 'Web App to retrieve information of the residential properties',
+        'date_posted': 'August 7, 2019'
     },
-    {
-        'author': 'John Kim',
-        'title': 'Damage Assessment',
-        'content': 'FEMA can you help you return your home back to its original state. Find out how.',
-        'date_posted': 'April 21, 2018'
-    }
 ]
 
 @app.route("/", methods=['GET', 'POST'])
 
 @app.route("/home")
-def login():
-    form = LoginForm()
-    if form.validate_on_submit():
-        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
-            flash('You have been logged in!', 'success')
-            return redirect(url_for('home'))
-        else:
-            flash('Login Unsuccessful. Please check username and password', 'danger')
-    return render_template('login.html', title='Login', form=form)
+def Home():
+    # form = LoginForm()
+    # if form.validate_on_submit():
+    #     if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+    #         flash('You have been logged in!', 'success')
+    #         return redirect(url_for('home'))
+    #     else:
+    #         flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('home.html', title='Home Page')
 
 
 @app.route("/about")
@@ -53,7 +49,6 @@ def register():
 
 
 
-
 @app.route('/upload')
 def upload():
     return render_template('upload.html')
@@ -62,9 +57,16 @@ def upload():
 def upload_file():
    if request.method == 'POST':
       f = request.files['file']
-      print(type(f))
-      f.save(f'static/user-photo/{secure_filename(f.filename)}')
-      master_results = custom.master_query(f'static/user-photo/{secure_filename(f.filename)}')
+      if f.filename =='':
+          flash('No Selected file')
+          return redirect('upload.html')
+      else:
+          f.save(f'static/user-photo/{secure_filename(f.filename)}')
+          master_results = custom.master_query(f'static/user-photo/{secure_filename(f.filename)}')
+          name = str(time.time())
+          os.rename('static/google-pics/gsv_0.jpg',f'static/google-pics/{name}.jpg')
+
+
 
 
       #
@@ -74,14 +76,14 @@ def upload_file():
       # sql = f"""
       # INSERT INTO Property_info
       # values({master_results['zillow_id']},
-      # '{master_results['address']}',
-      # '{master_results['home_type']}')
+      # {master_results['address']}',
+      # {master_results['home_type']}')
       # {master_results['year_built']},
       # {master_results['property_size']},
       # {master_results['home_size']},
       # {master_results['bathrooms']},
       # {master_results['bedrooms']},
-      # '{master_results['last_sold_date']}',
+      # {master_results['last_sold_date']}',
       # {master_results['last_sold_price']},
       # {master_results['zestimate_amount']}
       # )
@@ -100,10 +102,26 @@ def upload_file():
    last_sold_date = master_results['last_sold_date'],
    last_sold_price = master_results['last_sold_price'],
    zestimate_amount = master_results['zestimate_amount'],
-   address = master_results['address'])
+   address = master_results['address'],
+   filename = f.filename,
+   name =name
+   )
 
+@app.route('/submitted', methods= ['GET','POST'])
+def submitted():
+    return render_template('submitted.html', title='Submitted')
 
-
+@app.after_request
+def add_header(r):
+    """
+    Add headers to both force latest IE rendering engine or Chrome Frame,
+    and also to cache the rendered page for 10 minutes.
+    """
+    r.headers["Cache-Control"] = "no-cache, no-store, must-revalidate"
+    r.headers["Pragma"] = "no-cache"
+    r.headers["Expires"] = "0"
+    r.headers['Cache-Control'] = 'public, max-age=0'
+    return r
 
 
 if __name__ == '__main__':

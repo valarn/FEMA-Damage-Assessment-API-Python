@@ -1,76 +1,32 @@
 {% extends "layout.html" %}
 {% block content %}
-    {% for post in posts %}
-        <article class="media content-section">
-          <div class="media-body">
-            <div class="article-metadata">
-              <a class="mr-2" href="#">{{ post.author }}</a>
-              <small class="text-muted">{{ post.date_posted }}</small>
-            </div>
-            <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
-            <p class="article-content">{{ post.content }}</p>
-          </div>
-        </article>
-{% endfor %}
-{% endblock content %}
-
-
-
-<!-- <!DOCTYPE html>
-<html>
-  <head>
-
-    <title></title>
-  </head>
-  <body>
-      <h1>Home Page</h1>
-      <h1>FEMA Damage Assessment</h1>
-
-      <p>Import Photo of Damaged Home</p>
-      <form action="/action_page.php">
-        <input type="file" name="pic" accept="image/*">
-        <input type="submit">
-      </form>
-      <form>
-        First name:<br>
-        <input type="text" name="firstname"><br>
-        Last name:<br>
-        <input type="text" name="lastname"><br>
-          Address:<br>
-          <input type="text" name= "address"><br>
-      </form>
-      <p><input type = "submit" value = "submit" /></p>
-  </body>
-</html> -->
-<!-- <!DOCTYPE html>
-<html>
-
-<head>
-
-    <title>Home</title>
-
-</head>
-
 <body>
-<h1>FEMA Damage Assessment</h1>
+  During the recovery phase following a disaster, FEMA IA team members perform damage assessment 'On the ground' to assess the level of damage caused to residential parcels and critical infrastructures. This work is very labor intensive and inefficient if done manually. Also, due to verification measures put in place by FEMA, the assessment teams have to first report to the regional centeers and after the information has been verified the information will be passed to the FEMA headquarters to start restoration fundings. As expected this process can take very long time, and leaves a lot of people affected by disasters in shelters and out of their home.
 
-<p>Import Photo of Damaged Home</p>
-<form action="/action_page.php">
-  <input type="file" name="pic" accept="image/*">
-  <input type="submit">
-</form>
-<form>
-  First name:<br>
-  <input type="text" name="firstname"><br>
-  Last name:<br>
-  <input type="text" name="lastname"><br>
-    Address:<br>
-    <input type="text" name= "address"><br>
-</form>
-<p><input type = "submit" value = "submit" /></p>
+This is where using our app the assessment team can speed up their process by taking a simple photo and forwarding the information directly to FEMA regional and headquarters databases. Currently we have a Web App working where the FEMA IA team members will take a photo of the affected residential parcel and then a form containing the pre-disaster and post-disaster photos will appear on the screen and provides the following information about the property: <br>
+<ul>
+  <li>Address </li>
+  <li>The zillow id for the unit </li>
+  <li>Home type </li>
+  <li>Year Built </li>
+  <li>Lot size </li>
+  <li>Living area </li>
+  <li>Bathrooms </li>
+  <li>Bedrooms </li>
+  <li>Last time sold </li>
+  <li>Last sold price </li>
+  <li>Zestimate price </li>
+</ul>
 
-
-</body>
-
-
-</html> -->
+Also a form will appear on the bottom of these outputs where the FEMA member will input the following information from drop down menus dedicated to the metrics FEMA looks at before certifying fundings. <br>
+<ul>
+  <li> Disaster Type</li>
+  <li> Damage Degree</li>
+  <li> Occupancy Status</li>
+  <li> Rent Status of the neighborhood</li>
+  <li> Property access</li>
+  <li> Additional notes</li>
+</ul>
+After the submitting the above fields all the data will be saved into a PostGreSQL Database and can be accessed at both regional and headquarters.
+  </Body>
+{% endblock content %}

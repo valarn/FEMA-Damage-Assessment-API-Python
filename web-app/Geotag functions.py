@@ -1,16 +1,16 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ## Functions 
+# ## Functions
 # ---
-# 
+#
 # This file contains script for extracting metadata from imagery and external details from Google and Zillow APIs.
-# 
+#
 # External data from the following APIs are extracted:
 # - Google Street View API
 # - Google Geocoder API
-# - Zillow individual house prices and details 
-# 
+# - Zillow individual house prices and details
+#
 # **Note: In order to use these APIs, keys from Google and Zillow must be obtained.**
 
 # In[1]:
@@ -18,10 +18,6 @@
 
 # Modules that need to be installed are pillow, google_streetview, googlemaps, pygeocoder
 py_modules =['pillow','google_streetview', 'googlemaps','pygeocoder']
-
-
-# In[2]:
-
 
 ## Install the following modules in your device
 # %pip install pillow
@@ -53,16 +49,12 @@ import json
 
 from pygeocoder import Geocoder
 
-
-# In[4]:
-
-
 def get_exif(filename):
     """Function for extracting GPS data from image
         Args:
             img (.jpeg / .png et al.): an image file Note: Photos
         Output:
-            Will first validate whether or not we have a valid image file and then output the 
+            Will first validate whether or not we have a valid image file and then output the
             metadata in form of a dictionary """
     try:
         image = Image.open(filename)
@@ -72,24 +64,22 @@ def get_exif(filename):
             for key, value in exif.items():
                 name = TAGS.get(key, key)
                 exif[name] = exif.pop(key)
-            
+
     except:
-        raise ValueError("""Please upload a valid jpg or png file do not use airdrop or messaging apps like WhatsApp 
+        raise ValueError("""Please upload a valid jpg or png file do not use airdrop or messaging apps like WhatsApp
                          or Slack to transfer images. Emailing will keep all of the metadata.""")
-    
-        
+
+
     return exif
 
 
-# In[5]:
-
 
 def get_geotagging(exif):
-    
-    
+
+
     """ Returns:
         Dictionary with following key: value pairs:
-            'GPSVersionID':  bytes, 
+            'GPSVersionID':  bytes,
             'GPSLatitudeRef': str = 'N' or 'S',
             'GPSLatitude': tuple of tuples,
             'GPSLongitudeRef': str = 'E' or 'W',
@@ -124,7 +114,7 @@ def get_geotagging(exif):
 
                 }
     """
-   
+
     if not exif:
         raise ValueError("No metadata found please check your camera settings")
 
@@ -132,72 +122,46 @@ def get_geotagging(exif):
     for (idx, tag) in TAGS.items():
         if tag == 'GPSInfo':
             geotagging= exif[tag]
-                
+
     new = {GPSTAGS[k]: v for k,v in geotagging.items()}
 
     return new
 
-
-       
-
-
 # # Convert to degrees
-
-# In[6]:
 
 
 def to_degrees(coord,direc):
     deg_num, deg_denom = coord[0]
     d = float(deg_num)/float(deg_denom)
-    
+
     min_num, min_denom = coord[1]
     m = float(min_num)/float(min_denom)
-    #Seconds are optional 
+    #Seconds are optional
     try:
         sec_num, sec_denom = coord[2]
         s = float(sec_num)/float(sec_denom)
     except:
         s = 0
-    
+
     if direc == 'N' or direc == 'E':
         sign = 1
     elif direc == 'S' or direc == 'W':
-        sign = -1 
-    
-    
-    return sign*(d + m/(60.00)+s/(3600.00)) 
-            
+        sign = -1
 
 
-# In[ ]:
-
-
-
+    return sign*(d + m/(60.00)+s/(3600.00))
 
 
 # ## Putting in the Google API
 
-# In[7]:
-
-
 view = google_streetview
-
-
-# In[8]:
-
 
 with open('credentials.json') as json_file:
     credential = json.load(json_file)
 
 
-# In[9]:
-
 
 gmaps = googlemaps.Client(credential['google-api-key'])
-
-
-# In[10]:
-
 
 # Define parameters for street view api
 def google_streetviewer(location, key='YOURAPIKEY'):
@@ -216,15 +180,8 @@ def google_streetviewer(location, key='YOURAPIKEY'):
     return results.download_links('google-pics')
 
 
-# In[ ]:
-
-
-
-
 
 # ## Setting up the Google API to show the address
-
-# In[11]:
 
 
 def reverse_lookup(lat, long, key='YOURAPIKEY'):
@@ -244,49 +201,31 @@ def reverse_lookup(lat, long, key='YOURAPIKEY'):
     state = location_details[2].split(" ")[1]
     return address, zipcode, city, state
 
-
-# ## Setting up the Zillow API
-
-# In[ ]:
-
-
-
-
-
-# In[12]:
-
+## Setting up the Zillow API
 
 #Packages used for the Zillow API
 
 from pyzillow.pyzillow import ZillowWrapper, GetDeepSearchResults, GetUpdatedPropertyDetails
 
 def zillow_query(key, address,citystatezip):
-    
+
     zillow =[]
     zillow_data =  ZillowWrapper(key)
     deep_search_response = zillow_data.get_deep_search_results(
         address, citystatezip)
     result = GetDeepSearchResults(deep_search_response)
-    
 
-#Print the results of the query 
+
+#Print the results of the query
 
     return result
-
-
-# In[20]:
 
 
 foo = zillow_query(credential['zillow-api-key'], '108 S Croft', '90048')
 
 
-# In[21]:
-
 
 a = foo.__dict__
-
-
-# In[22]:
 
 
 a
@@ -294,31 +233,19 @@ a
 
 # ## Function that gets the metadata and gives all the details about the location
 
-# In[16]:
-
 
 def master_query(img_file):
     exif = get_exif(img_file)
     tags = get_geotagging(exif)
     location = f"{to_degrees(tags['GPSLongitude'], tags['GPSLongitudeRef'])},{to_degrees(tags['GPSLatitude'], tags['GPSLatitudeRef'])}"
-    
+
     google_view = google_streetviewer(location, key= credential['google-api-key'])
-    
+
     address = reverse_lookup(float(location.split(",")[1]),float(location.split(",")[0]), credential['google-api-key'])
-    
+
     details = zillow_query(credential['zillow-api-key'],address[0],address[1])
     details_dict = details.__dict__
     keys = ['zillow_id','home_type','year_built','property_size','home_size',
             'bathrooms','bedrooms','last_sold_date','last_sold_price','zestimate_amount']
     dict_outcome= {k:a[k] for k in keys if k in a}
     return dict_outcome
-    
-    
-    
-
-
-# In[ ]:
-
-
-
-
